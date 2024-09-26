@@ -28,15 +28,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @RestController
 @RequiredArgsConstructor
 public class StudentController {
-
-    private final StudentRepository studRepo;
     private final StudentService studentService;
     
     // //STUDENT POST DTO
     // @PostMapping("/students")
     // public Student post(@RequestBody StudentPostDto studentPostDto) {
-    //     Student student = StudentMapper.INSTANCE.studentPostDtoToStudent(studentPostDto);
-    //     return studRepo.save(student);
+    //     return studentService.post(studentPostDto);
     // }
 
     //STUDENT RESPONSE DTO
@@ -48,22 +45,21 @@ public class StudentController {
     @DeleteMapping("/students/del/{student-id}")
     @ResponseStatus(HttpStatus.OK)
     public void delete(@PathVariable("student-id") int studentId) {
-        studRepo.deleteById(studentId);
+        studentService.delete(studentId);
     }
 
     @GetMapping("/students")
-    public List<Student> findAllStudent() {
-        return studRepo.findAll();
+    public List<StudentResponseDto> findAllStudent() {
+        return studentService.findAllStudent();
     }
 
     @GetMapping("/students/{student-id}")
-    public Student findStudentById(@PathVariable("student-id") int id) {
-        return studRepo.findById(id)
-                       .orElse(null);
+    public StudentResponseDto findStudentById(@PathVariable("student-id") int id) {
+        return studentService.findStudentById(id);
     }
 
     @GetMapping("/students/search/{student-name}")
-    public List<Student> findStudentById(@PathVariable("student-name") String firstName) {
-        return studRepo.findAllByFirstnameContaining(firstName);
+    public List<StudentResponseDto> findStudentByName(@PathVariable("student-name") String firstName) {
+        return studentService.findStudentByName(firstName);
     }
 }

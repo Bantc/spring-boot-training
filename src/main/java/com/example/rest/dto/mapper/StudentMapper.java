@@ -30,4 +30,5 @@ public interface StudentMapper {
         student.setSchool(school);
         return student;
     };
+    List<StudentResponseDto> mapToList(List<Student> students);
 }

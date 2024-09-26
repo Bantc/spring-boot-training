@@ -7,6 +7,9 @@ import com.example.rest.SchoolRepository;
 import com.example.rest.dto.SchoolDto;
 import com.example.rest.dto.mapper.SchoolMapper;
 import com.example.rest.dto.mapper.StudentMapper;
+import com.example.rest.service.SchoolService;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
@@ -16,24 +19,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
+@RequiredArgsConstructor
 public class SchoolController {
-    private final SchoolRepository schoolRepository;
-
-    public SchoolController(SchoolRepository schoolRepository) {
-        this.schoolRepository = schoolRepository;
-    }
+    private final SchoolService schoolService;
 
     @PostMapping("/schools")
     public SchoolDto createSchool(@RequestBody SchoolDto schoolDto) {
-        School school = SchoolMapper.INSTANCE.schoolDtoToSchool(schoolDto);
-        schoolRepository.save(school);
-        return schoolDto;
+        return schoolService.createSchool(schoolDto);
     }
     
     @GetMapping("/schools")
     public List<SchoolDto> getSchools() {
-        List<SchoolDto> schoolsDtos = SchoolMapper.INSTANCE.mapToList(schoolRepository.findAll());
-        return schoolsDtos;
+        return schoolService.getSchools();
     }
 
 }
