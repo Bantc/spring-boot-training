@@ -9,12 +9,18 @@ import com.example.rest.dto.StudentResponseDto;
 import com.example.rest.dto.mapper.StudentMapper;
 import com.example.rest.service.StudentService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.HashMap;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,7 +44,7 @@ public class StudentController {
 
     //STUDENT RESPONSE DTO
     @PostMapping("/students")
-    public StudentResponseDto postResponse(@RequestBody StudentPostDto studentPostDto) {
+    public StudentResponseDto postResponse(@Valid @RequestBody StudentPostDto studentPostDto) {
         return studentService.postResponse(studentPostDto);
     }
 
@@ -61,5 +67,18 @@ public class StudentController {
     @GetMapping("/students/search/{student-name}")
     public List<StudentResponseDto> findStudentByName(@PathVariable("student-name") String firstName) {
         return studentService.findStudentByName(firstName);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+        HashMap<String, String> errorsMap = new HashMap<>();
+        exception.getBindingResult().getAllErrors()
+            .forEach(error -> {
+                String fieldName = ((FieldError) error).getField();
+                String errorMessage = error.getDefaultMessage();
+
+                errorsMap.put(fieldName, errorMessage);
+            });
+        return new ResponseEntity<>(errorsMap, HttpStatus.BAD_REQUEST);
     }
 }

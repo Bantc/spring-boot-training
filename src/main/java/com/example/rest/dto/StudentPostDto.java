@@ -1,8 +1,13 @@
 package com.example.rest.dto;
 
-public record StudentPostDto(String firstname,
-                             String lastname,
-                             String email,
-                             int schoolId) {
+import jakarta.validation.constraints.NotEmpty;
+
+public record StudentPostDto(
+    @NotEmpty
+    String firstname,
+    @NotEmpty(message = "LastName should not be empty")
+    String lastname,
+    String email,
+    int schoolId) {
 
 }
